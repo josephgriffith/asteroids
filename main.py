@@ -2,6 +2,7 @@ import sys
 import pygame
 from constants import *
 from player import Player
+from shot import Shot
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from random import randrange
@@ -25,9 +26,11 @@ def main():
     updatables = pygame.sprite.Group()
     drawables = pygame.sprite.Group()
     rocks = pygame.sprite.Group()
+    ordinance = pygame.sprite.Group()
     Player.containers = (updatables, drawables)
     Asteroid.containers = (updatables, drawables, rocks)
     AsteroidField.containers = (updatables)
+    Shot.containers = (updatables, drawables, ordinance)
 
     player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
     # print(player.containers)

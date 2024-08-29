@@ -49,22 +49,27 @@ def main():
                 return
         screen.fill((128,16,255))
         screen.blit(font.render(str(frames), False, (32, 32, 32)), (20,20))
-        screen.blit(font.render(str(player.rotation), False, (32, 32, 32)), (20,40))
+        screen.blit(font.render(str(player.rotation), False, (32, 32, 32)), (20,50))
 
         for u in updatables:
             u.update(dt)
-        for r in rocks:
-            if player.collision(r):
-                screen.blit(font.render('YOU DIED.', False, (255, 128, 128)), (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
-                sleep(3)
-                sys.exit('Game over!')
         for d in drawables:
             d.draw(screen)
+        for r in rocks:
+            if player.collision(r):
+                # fails to display YOU DIED unless ship is inside the asteroid or something??? 
+                # screen.blit(font.render('YOU DIED.', False, (255, 128, 128)), (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+                sleep(2)
+                sys.exit('Game over!')
+            for b in ordinance:
+                if r.collision(b):
+                    r.split()
+                    b.kill()
 
         # print(player.position)
 
         pygame.display.flip()
-        dt = clock.tick(30)/1000
+        dt = clock.tick(60)/1000        #FPS
     while True:
         pass
 

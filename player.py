@@ -15,18 +15,30 @@ class Player(CircleShape):
     # in the player class
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius 
-        a = self.position + forward * 2*self.radius
-        b = self.position - forward * self.radius - right
-        c = self.position - forward * self.radius + right
-        return [a, b, c]
+        fwidth = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius/1.1
+        bwidth = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius 
+        a = self.position + forward * 1.5*self.radius - fwidth
+        b = self.position + forward * 1.5*self.radius + fwidth
+        c = self.position - forward * self.radius - bwidth
+        d = self.position - forward * self.radius + bwidth
+        # return [a, b, c, d]     #hourglass
+        # return [a, b, d, c]     #trapezoid
+        return [a, d, b, c]     #nacelles
+        # return [d, c, b, a]     #hourglass
+        # return [a, c, b, d]     #hourglass
+        # return [a, d, c, b]     #hourglass
     
     def draw(self, screen):
-        pygame.draw.circle(screen, 'SpringGreen4', self.position, PLAYER_RADIUS, 3)
-        pygame.draw.polygon(screen, 'SpringGreen4', self.triangle(), 4)
+        c = "light goldenrod"
+        pygame.draw.circle(screen, c, self.position, PLAYER_RADIUS)
+        pygame.draw.polygon(screen, c, self.triangle())
 
     def rotate(self, dt):
         self.rotation += int(PLAYER_TURN_SPEED*dt)      #TODO: figure out restricting to 0-360?
+
+    def move(self, dt):
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        self.position += forward*PLAYER_SPEED*dt
 
     def update(self, dt):
         if self.timer > 0:
@@ -43,15 +55,11 @@ class Player(CircleShape):
         if keys[pygame.K_SPACE]:
             self.shoot()
 
-    def move(self, dt):
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        self.position += forward*PLAYER_SPEED*dt
-
     def shoot(self):
         if self.timer <= 0:
             b = Shot(self.position[0], self.position[1], SHOT_RADIUS)
-            # b.velocity = self.velocity*PLAYER_SHOOT_SPEED
-            b.velocity = pygame.Vector2(0,1).rotate(self.rotation)*PLAYER_SHOOT_SPEED
+            b.velocity = self.velocity*PLAYER_SHOOT_SPEED               #lays stationary mine
+            # b.velocity = pygame.Vector2(0,1).rotate(self.rotation)*PLAYER_SHOOT_SPEED
             self.timer = PLAY_SHOOT_INTERVAL
 
 
